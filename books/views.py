@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -96,7 +97,7 @@ def review_books(request):    # saving this as a function based view, class base
 	
 	return render(request, "list-to-review.html", context)
 """	
-	
+@login_required	
 def review_book(request, pk):
 	"""
 	Review an individual book
