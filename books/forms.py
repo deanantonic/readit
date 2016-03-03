@@ -1,5 +1,5 @@
 from django import forms
-
+from .models import Book 
 
 class ReviewForm(forms.Form):
 	"""
@@ -23,3 +23,9 @@ class ReviewForm(forms.Form):
 
 
 	)
+
+
+class BookForm(forms.ModelForm):
+	class Meta:
+		model = Book
+		fields = ['title', 'authors']
