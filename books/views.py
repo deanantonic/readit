@@ -1,5 +1,5 @@
 from django.db.models import Count
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, View  # import generic view object so that we can sublass it
 from .forms import ReviewForm
 from .models import Author, Book
@@ -36,13 +36,16 @@ class AuthorList(View):
 
 		return render(request, "authors.html", context)
 
+
 class BookDetail(DetailView):
 	model = Book
 	template_name = "book.html"
 
+
 class AuthorDetail(DetailView):
 	model = Author
 	template_name = "author.html"
+
 
 def review_books(request):
 	"""
@@ -62,7 +65,20 @@ def review_book(request, pk):
 	Review an individual book
 	"""
 	book = get_object_or_404(Book, pk=pk)
-	form = ReviewForm
+
+	if request.method == 'POST':
+		# Process our form
+		form = ReviewForm(request.POST)
+
+		if form.is_valid():
+			book.is_favourite = form.cleaned_data['is_favourite']
+			book.review = form.cleaned_data['review']
+			book.save()
+
+			return redirect('review-books')
+
+	else:
+	    form = ReviewForm
 	
 	context = {
 		'book': book,
